@@ -1,0 +1,1 @@
+[![Spring Boot CI](https://github.com/antoinederuel/Test/actions/workflows/ci.yml/badge.svg)](https://github.com/antoinederuel/Test/actions/workflows/ci.yml)
