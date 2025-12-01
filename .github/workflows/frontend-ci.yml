@@ -49,3 +49,8 @@ jobs:
     # Si tu as une erreur de type (ex: string au lieu de number), ça pète ici.
     - name: Build Project
       run: npm run build
+
+    # 6. Vérification Docker
+    - name: Build Docker Image
+      # Le point . signifie "le dossier courant", donc ./frontend grâce au 'defaults'
+      run: docker build -t frontend:latest .
