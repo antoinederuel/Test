@@ -13,8 +13,9 @@ function App() {
   const [newTaskTitle, setNewTaskTitle] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
-  // URL de ton API Backend
-  const API_URL = 'http://localhost:8080/tasks';
+  // On utilise la variable d'environnement de Vite
+  // Si elle n'existe pas, on met une chaîne vide par sécurité
+  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080/tasks';
 
   // --- LOGIQUE (ACTIONS) ---
 
