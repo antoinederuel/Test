@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  # Service 1 : Le Backend Java
+  backend:
+    build: ./backend
+    ports:
+      - "8080:8080" # On map le port 8080 du conteneur sur le 8080 de ton PC
+    networks:
+      - app-network
+
+  # Service 2 : Le Frontend React (Nginx)
+  frontend:
+    build: ./frontend
+    ports:
+      - "3000:80" # On accèdera au site via localhost:3000 (qui tape sur le 80 de Nginx)
+    depends_on:
+      - backend # Le front attend que le back commence à démarrer
+    networks:
+      - app-network
+
+# On définit un réseau privé pour qu'ils puissent communiquer (bonnes pratiques)
+networks:
+  app-network:
+    driver: bridge

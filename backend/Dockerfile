@@ -1,14 +1,24 @@
-# 1. On part d'une base Java 17 légère (Alpine Linux)
+# --- Étape 1 : Compilation (Builder) ---
+FROM eclipse-temurin:17-jdk-alpine as builder
+WORKDIR /app
+
+# On copie tout le code source dans le conteneur
+COPY . .
+
+# On donne les droits d'exécution au wrapper Maven
+RUN chmod +x mvnw
+
+# On lance la compilation DANS Docker (crée le .jar)
+RUN ./mvnw clean package -DskipTests
+
+# --- Étape 2 : Exécution (Runner) ---
 FROM eclipse-temurin:17-jdk-alpine
+WORKDIR /app
 
-# 2. On ajoute un volume pour les fichiers temporaires de Tomcat
-VOLUME /tmp
+# On récupère le .jar généré à l'étape 1
+# Attention : le chemin target/*.jar peut varier, on prend le premier qu'on trouve
+COPY --from=builder /app/target/*.jar app.jar
 
-# 3. La variable qui cible le fichier .jar généré
-ARG JAR_FILE=target/*.jar
+EXPOSE 8080
 
-# 4. On copie le .jar de ton PC (ou de la CI) vers l'intérieur du conteneur sous le nom app.jar
-COPY ${JAR_FILE} app.jar
-
-# 5. La commande magique qui se lance au démarrage du conteneur
-ENTRYPOINT ["java","-jar","/app.jar"]
+ENTRYPOINT ["java","-jar","app.jar"]
