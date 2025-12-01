@@ -9,30 +9,22 @@ on:
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
-    
-    # --- LA MAGIE EST ICI ---
-    # On définit le dossier de travail par défaut pour toutes les commandes 'run'
-    defaults:
-      run:
-        working-directory: ./todo/backend
 
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
+
+    # --- ETAPE DE DEBUG (Sherlock Holmes) ---
+    - name: Debug - List files
+      run: |
+        echo "Voici l'arborescence exacte des fichiers :"
+        ls -R
+    # ----------------------------------------
 
     - name: Set up JDK 17
       uses: actions/setup-java@v4
       with:
         java-version: '17'
         distribution: 'temurin'
-        cache: maven
-        # Il faut préciser au cache où trouver le pom.xml car il n'est pas à la racine
-        cache-dependency-path: todo/backend/pom.xml
-
-    - name: Grant execute permission for mvnw
-      # Grâce au 'defaults' plus haut, on est déjà dans le bon dossier !
-      run: chmod +x mvnw
-
-    - name: Build with Maven
-      # Idem, on lance la commande directement
-      run: ./mvnw clean verify
+        # J'ai temporairement retiré le cache pour ne pas bloquer le build
+        # On le remettra quand on aura trouvé le bon chemin
