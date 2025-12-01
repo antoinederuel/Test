@@ -9,8 +9,8 @@ on:
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
-
-    # On dit à GitHub : "Toutes les commandes s'exécutent dans le dossier 'backend'"
+    
+    # On travaille toujours dans le dossier backend
     defaults:
       run:
         working-directory: ./backend
@@ -25,14 +25,16 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
         cache: maven
-        # C'est ici qu'on corrige le tir pour le cache :
         cache-dependency-path: backend/pom.xml
 
     - name: Grant execute permission for mvnw
-      # Comme on est déjà dans ./backend grâce au 'defaults' plus haut, 
-      # on appelle juste mvnw directement.
       run: chmod +x mvnw
 
+    # 1. On compile et on teste (Maven)
     - name: Build with Maven
-      # Le coeur du pipeline
-      run: ./mvnw clean verify
+      run: ./mvnw clean package
+
+    # 2. On construit l'image Docker (Juste pour vérifier que le build passe)
+    - name: Build Docker Image
+      # Le point . à la fin est crucial : il utilise le Dockerfile du dossier courant
+      run: docker build -t todo:latest .
