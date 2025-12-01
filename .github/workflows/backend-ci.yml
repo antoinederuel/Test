@@ -1,16 +1,21 @@
-name: Spring Boot CI
+name: Spring Boot Backend CI
 
 on:
   push:
     branches: [ "main" ]
+    # OPTIMISATION : Ne se lance que si on touche au dossier backend
+    paths:
+      - 'backend/**'
   pull_request:
     branches: [ "main" ]
+    paths:
+      - 'backend/**'
 
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
-    
-    # On travaille toujours dans le dossier backend
+
+    # On travaille dans le dossier backend
     defaults:
       run:
         working-directory: ./backend
@@ -30,11 +35,10 @@ jobs:
     - name: Grant execute permission for mvnw
       run: chmod +x mvnw
 
-    # 1. On compile et on teste (Maven)
+    # 1. Compilation et Tests
     - name: Build with Maven
       run: ./mvnw clean package
 
-    # 2. On construit l'image Docker (Juste pour vérifier que le build passe)
+    # 2. Vérification Docker
     - name: Build Docker Image
-      # Le point . à la fin est crucial : il utilise le Dockerfile du dossier courant
       run: docker build -t todo:latest .
