@@ -141,3 +141,6 @@ function App() {
 }
 
 export default App;
+
+
+// Note: N'oublie pas de configurer les CORS dans ton backend Spring Boot pour permettre les requêtes depuis ton frontend React.
