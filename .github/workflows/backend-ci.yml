@@ -66,4 +66,4 @@ jobs:
       with:
         context: ./backend
         push: true
-        tags: TON_PSEUDO_DOCKER/todo-backend:latest
+        tags: antoinderuel/todo-backend:latest
