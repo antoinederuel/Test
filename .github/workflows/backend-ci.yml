@@ -14,13 +14,23 @@ jobs:
   build-and-test:
     runs-on: ubuntu-latest
 
-    # --- NOUVEAU : On lance un conteneur Mongo pour les tests ---
+    # --- CONFIGURATION MONGO ROBUSTE ---
     services:
       mongo:
         image: mongo:latest
         ports:
           - 27017:27017
-    # ------------------------------------------------------------
+        env:
+          # On définit explicitement un user/password pour la CI
+          MONGO_INITDB_ROOT_USERNAME: root
+          MONGO_INITDB_ROOT_PASSWORD: rootpassword
+        # HEALTHCHECK : GitHub va attendre que Mongo réponde "OK" avant de lancer les steps
+        options: >-
+          --health-cmd "echo 'db.runCommand(\"ping\").ok' | mongosh localhost:27017/test --quiet"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    # -----------------------------------
 
     defaults:
       run:
@@ -41,13 +51,12 @@ jobs:
     - name: Grant execute permission for mvnw
       run: chmod +x mvnw
 
-    # --- MODIFIÉ : On donne l'adresse du Mongo temporaire à Maven ---
     - name: Build with Maven
-      # On dit à Spring : "Connecte-toi au Mongo qu'on vient de lancer"
+      # On passe l'URI qui correspond exactement aux identifiants définis plus haut
+      # Le ?authSource=admin est CRUCIAL avec l'image mongo officielle
       env:
-        MONGO_URI: mongodb://localhost:27017/testdb
+        MONGO_URI: mongodb://root:rootpassword@localhost:27017/testdb?authSource=admin
       run: ./mvnw clean package
-    # ----------------------------------------------------------------
 
     - name: Login to Docker Hub
       uses: docker/login-action@v3
