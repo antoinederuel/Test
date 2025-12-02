@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 
 // 1. Définition du type (Doit correspondre exactement à ton Java Task.java)
 interface Task {
-  id: number;
+  id: string;
   title: string;
   completed: boolean;
 }
@@ -59,7 +59,7 @@ function App() {
   };
 
   // 3. Supprimer une tâche (Appelle le DELETE Java)
-  const handleDeleteTask = (id: number) => {
+  const handleDeleteTask = (id: string) => {
     fetch(`${API_URL}/${id}`, {
       method: 'DELETE',
     })

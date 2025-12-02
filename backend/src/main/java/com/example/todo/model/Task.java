@@ -1,24 +1,20 @@
 package com.example.todo.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import lombok.AllArgsConstructor; // <--- AJOUTE ÇA
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 import lombok.Data;
-import lombok.NoArgsConstructor;  // <--- AJOUTE ÇA (Crucial pour JPA)
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
 
-@Entity
+@Document(collection = "tasks")
 @Data
-@NoArgsConstructor // Constructeur vide (obligatoire pour JPA)
-@AllArgsConstructor // Constructeur avec tous les arguments
+@NoArgsConstructor
+@AllArgsConstructor
 public class Task {
 
-    @Id    
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Id
+    private String id; 
 
     private String title;
-
     private boolean completed;
 }

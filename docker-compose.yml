@@ -1,25 +1,44 @@
 version: '3.8'
 
 services:
-  # Service 1 : Le Backend Java
+  # 1. La Base de Données (MongoDB Local)
+  mongo:
+    image: mongo:latest
+    container_name: todo-mongo
+    ports:
+      - "27017:27017" # Port standard Mongo
+    volumes:
+      - mongo-data:/data/db # Persistance des données sur ton disque
+    networks:
+      - app-network
+
+  # 2. Le Backend Java
   backend:
     build: ./backend
     ports:
-      - "8080:8080" # On map le port 8080 du conteneur sur le 8080 de ton PC
+      - "8080:8080"
+    environment:
+      # C'est ici qu'on fait le lien !
+      # On dit à Spring : "Connecte-toi au conteneur qui s'appelle 'mongo'"
+      - MONGO_URI=mongodb://mongo:27017/tododb
+    depends_on:
+      - mongo
     networks:
       - app-network
 
-  # Service 2 : Le Frontend React (Nginx)
+  # 3. Le Frontend React
   frontend:
     build: ./frontend
     ports:
-      - "3000:80" # On accèdera au site via localhost:3000 (qui tape sur le 80 de Nginx)
+      - "3000:80"
     depends_on:
-      - backend # Le front attend que le back commence à démarrer
+      - backend
     networks:
       - app-network
 
-# On définit un réseau privé pour qu'ils puissent communiquer (bonnes pratiques)
+volumes:
+  mongo-data:
+
 networks:
   app-network:
     driver: bridge
