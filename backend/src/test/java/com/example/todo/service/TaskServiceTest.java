@@ -28,7 +28,7 @@ public class TaskServiceTest {
         taskToSave.setTitle("Apprendre la CI/CD");
 
         Task savedTask = new Task();
-        savedTask.setId(1L);
+        savedTask.setId(1);
         savedTask.setTitle("Apprendre la CI/CD");
 
         // On dit au Mock : "Si on t'appelle avec taskToSave, retourne savedTask"
